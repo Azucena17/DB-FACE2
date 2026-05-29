@@ -1,0 +1,33 @@
+Explicación del Proyecto
+
+Cómo ejecutar la aplicación
+1. Abrir el proyecto en Visual Studio Code.
+2. Abrir una terminal.
+3. Ejecutar el siguiente comando si se usa CMD: mvn spring-boot:run
+o si se usa PowerShell, el siguiente comando: .\mvnw sping-boot:run
+4. Esperar a que Spring Boot inicie correctamente.
+
+Cómo abrir el sistema
+1. Abrir el navegador y acceder a: http://localhost:8080
+2. Hacer clic en "verificar" para saber que el sistema funciona
+
+Cómo consultar el estado del sistema
+1. Abrir en el navegador: http://localhost:8080/api/monitoreo/estado
+
+Preparación para futuras integraciones
+La aplicación fue desarrollada utilizando Spring Boot y Maven, dejando preparada la estructura para futuras integraciones con:
+
+- SQL Server
+mediante JDBC y Spring Data JPA.
+
+- Módulo de transacciones
+para depósitos, retiros y transferencias bancarias.
+
+- Backups
+para mecanismos de respaldo y recuperación de información.
+
+- Failover Cluster y alta disponibilidad
+mediante despliegues distribuidos y escalabilidad de Spring Boot.
+
+La aplicación fue desarrollada utilizando arquitectura Spring Boot y Maven, dejando preparada la estructura para futuras integraciones con base de datos SQL Server, módulos de transacciones, backups y mecanismos de alta disponibilidad.
+La separación entre frontend, backend y configuración permite extender el sistema posteriormente sin afectar la arquitectura principal.

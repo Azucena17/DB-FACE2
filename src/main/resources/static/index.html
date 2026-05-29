@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Banco UMG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="toast" class="toast hidden"></div>
+
+<section id="loginScreen" class="login-screen">
+    <div class="login-card">
+        <div class="logo">🏦</div>
+        <h1>Banco UMG</h1>
+        <p>Sistema Bancario de Alta Disponibilidad</p>
+
+        <input id="usuario" type="text" placeholder="Usuario">
+        <input id="password" type="password" placeholder="Contraseña">
+
+        <button onclick="iniciarSesion()">Ingresar</button>
+        <small>Usuario: admin | Contraseña: 1234</small>
+    </div>
+</section>
+
+<section id="appScreen" class="app hidden">
+    <aside class="sidebar">
+        <h2>🏦 Banco UMG</h2>
+
+        <nav>
+            <button onclick="mostrarModulo('dashboard')">📊 Dashboard</button>
+            <button onclick="mostrarModulo('clientes')">👥 Clientes</button>
+            <button onclick="mostrarModulo('cuentas')">💳 Cuentas</button>
+            <button onclick="mostrarModulo('movimientos')">💸 Movimientos</button>
+            <button onclick="mostrarModulo('estado')">🟢 Estado</button>
+            <button onclick="mostrarModulo('infraestructura')">🛡️ Infraestructura</button>
+            <button onclick="cambiarModo()">🌙 Modo oscuro</button>
+            <button class="logout" onclick="cerrarSesion()">🚪 Salir</button>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="topbar">
+            <div>
+                <h1>Banco UMG</h1>
+                <p>Panel administrativo bancario</p>
+            </div>
+            <span id="fechaActual"></span>
+        </header>
+
+        <section id="dashboard" class="modulo">
+            <h2>Dashboard General</h2>
+
+            <div class="cards">
+                <div class="info-card blue">
+                    <span>Clientes</span>
+                    <h3 id="totalClientes">0</h3>
+                    <p>Clientes registrados</p>
+                </div>
+
+                <div class="info-card green">
+                    <span>Cuentas</span>
+                    <h3 id="totalCuentas">0</h3>
+                    <p>Cuentas creadas</p>
+                </div>
+
+                <div class="info-card purple">
+                    <span>Movimientos</span>
+                    <h3 id="totalMovimientos">0</h3>
+                    <p>Transacciones realizadas</p>
+                </div>
+
+                <div class="info-card orange">
+                    <span>Disponibilidad</span>
+                    <h3>99.9%</h3>
+                    <p>Alta disponibilidad</p>
+                </div>
+            </div>
+
+            <div class="panel grafica-panel">
+                <h3>Resumen visual</h3>
+
+                <div class="barra">
+                    <span>Clientes</span>
+                    <div><p id="barraClientes"></p></div>
+                </div>
+
+                <div class="barra">
+                    <span>Cuentas</span>
+                    <div><p id="barraCuentas"></p></div>
+                </div>
+
+                <div class="barra">
+                    <span>Movimientos</span>
+                    <div><p id="barraMovimientos"></p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="clientes" class="modulo hidden">
+            <h2>Registro de Clientes</h2>
+
+            <div class="panel">
+                <input id="nombreCliente" type="text" placeholder="Nombre completo *">
+                <input id="dpiCliente" type="text" placeholder="DPI 13 dígitos *" maxlength="13">
+                <input id="correoCliente" type="email" placeholder="Correo electrónico *">
+                <input id="telefonoCliente" type="text" placeholder="Celular 8 dígitos *" maxlength="8">
+
+                <button onclick="registrarCliente()">Registrar Cliente</button>
+                <button class="secondary" onclick="exportarCSV('clientes')">Exportar Clientes CSV</button>
+            </div>
+
+            <div id="mensajeCliente" class="mensaje"></div>
+
+            <h3>Historial de Clientes</h3>
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>DPI</th>
+                        <th>Correo</th>
+                        <th>Celular</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tablaClientes"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="cuentas" class="modulo hidden">
+            <h2>Creación de Cuentas</h2>
+
+            <div class="panel">
+                <input id="numeroCuenta" type="text" placeholder="Número de cuenta *">
+
+                <select id="tipoCuenta">
+                    <option value="">Seleccione tipo de cuenta</option>
+                    <option>Cuenta de ahorro</option>
+                    <option>Cuenta monetaria</option>
+                    <option>Cuenta empresarial</option>
+                </select>
+
+                <input id="saldoInicial" type="number" placeholder="Saldo inicial *">
+
+                <button onclick="crearCuenta()">Crear Cuenta</button>
+                <button class="secondary" onclick="exportarCSV('cuentas')">Exportar Cuentas CSV</button>
+            </div>
+
+            <div id="mensajeCuenta" class="mensaje"></div>
+
+            <h3>Historial de Cuentas</h3>
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Tipo</th>
+                        <th>Saldo Inicial</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tablaCuentas"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="movimientos" class="modulo hidden">
+            <h2>Movimientos Bancarios</h2>
+
+            <div class="panel">
+                <select id="tipoMovimiento" onchange="cambiarFormularioMovimiento()">
+                    <option value="">Seleccione tipo de movimiento *</option>
+                    <option value="deposito">Depósito</option>
+                    <option value="retiro">Retiro</option>
+                    <option value="transferencia">Transferencia</option>
+                </select>
+
+                <input id="cuentaOrigen" type="text" placeholder="Número de cuenta origen *">
+                <input id="cuentaDestino" class="hidden" type="text" placeholder="Número de cuenta destino *">
+                <input id="nombreTitular" type="text" placeholder="Nombre del titular *">
+                <input id="montoMovimiento" type="number" placeholder="Monto *">
+                <input id="descripcionMovimiento" type="text" placeholder="Descripción o motivo *">
+
+                <button onclick="registrarMovimiento()">Registrar Movimiento</button>
+                <button class="secondary" onclick="exportarCSV('movimientos')">Exportar Movimientos CSV</button>
+            </div>
+
+            <div id="mensajeMovimiento" class="mensaje"></div>
+
+            <h3>Historial de Movimientos</h3>
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Cuenta Origen</th>
+                        <th>Cuenta Destino</th>
+                        <th>Titular</th>
+                        <th>Monto</th>
+                        <th>Descripción</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tablaMovimientos"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="estado" class="modulo hidden">
+            <h2>Estado del Sistema</h2>
+
+            <div class="panel estado-panel">
+                <p id="estadoSistema">Consultando estado...</p>
+                <button onclick="consultarEstado()">Actualizar Estado</button>
+            </div>
+        </section>
+
+        <section id="infraestructura" class="modulo hidden">
+            <h2>Infraestructura y Alta Disponibilidad</h2>
+
+            <div class="cards">
+                <div class="info-card blue">
+                    <span>Failover Cluster</span>
+                    <h3>Activo</h3>
+                    <p>Nodo principal y secundario preparados.</p>
+                </div>
+
+                <div class="info-card green">
+                    <span>Backup en Cloud</span>
+                    <h3>Cloud</h3>
+                    <p>Respaldos en ubicación externa.</p>
+                </div>
+
+                <div class="info-card purple">
+                    <span>RPO</span>
+                    <h3>15 min</h3>
+                    <p>Pérdida máxima estimada de datos.</p>
+                </div>
+
+                <div class="info-card orange">
+                    <span>RTO</span>
+                    <h3>5 min</h3>
+                    <p>Tiempo máximo estimado de recuperación.</p>
+                </div>
+            </div>
+
+            <div class="panel infra-panel">
+                <h3>Resumen técnico</h3>
+                <p>
+                    Banco UMG contempla una arquitectura de alta disponibilidad mediante
+                    Failover Cluster, respaldos automatizados en una ubicación externa
+                    y objetivos de recuperación definidos mediante RPO y RTO.
+                </p>
+
+                <ul>
+                    <li><strong>Alta Disponibilidad:</strong> si el servidor principal falla, otro nodo puede tomar el servicio.</li>
+                    <li><strong>Backup en Cloud:</strong> permite conservar respaldos fuera del servidor principal.</li>
+                    <li><strong>RPO:</strong> define cuánta información se podría perder como máximo.</li>
+                    <li><strong>RTO:</strong> define cuánto tiempo puede tardar la recuperación del servicio.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
